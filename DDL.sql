@@ -40,6 +40,26 @@ create table tra_trabalho (
   foreign key (tra_usr_id) references usr_usuario (usr_id) on delete restrict on update cascade
 );
 
+create table ace_acesso (
+  ace_id bigint generated always as identity,
+  ace_tipo varchar(100) not null,
+  ace_origem varchar(100),
+  ace_data_hora_inicio timestamp not null,
+  ace_tempo_acesso int,
+  ace_usuario bigint not null,
+  foreign key (ace_usuario) references usr_usuario (usr_id) on delete restrict on update cascade
+);
+
+create table con_configuracao (
+  con_id bigint generated always as identity,
+  con_responsavel bigint not null,
+  con_data_hora timestamp not null,
+  con_data_hora_fim timestamp,
+  con_parametro varchar(100) not null,
+  con_valor float,
+  foreign key (con_responsavel) references usr_usuario (usr_id) on delete restrict on update cascade
+);
+
 insert into usr_usuario (usr_nome, usr_senha)
   values ('admin', '$2a$10$i3.Z8Yv1Fwl0I5SNjdCGkOTRGQjGvHjh/gMZhdc3e7LIovAklqM6C');
 insert into aut_autorizacao (aut_nome)
@@ -51,6 +71,12 @@ insert into ant_anotacao(ant_texto, ant_data_hora, ant_usr_id)
 insert into tra_trabalho (tra_titulo, tra_data_hora_entrega, tra_nota, tra_usr_id)
   values ('Teste 1', current_timestamp, 6, 1),
          ('Teste 2', current_timestamp, null, 1);
+insert into ace_acesso (ace_tipo, ace_data_hora_inicio, ace_tempo_acesso, ace_usuario)
+  values ('Setup', '2025-09-03 11:00:00', 1, 1),
+         ('Config', current_timestamp, null, 1);
+insert into con_configuracao (con_responsavel, con_data_hora, con_parametro, con_valor)
+  values (1, '2025-09-03 11:30:00', 'taxa', 20.7),
+         (1, current_timestamp, 'rotação', null);
 
 create user spring with password 'pass123';
 
