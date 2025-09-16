@@ -60,6 +60,27 @@ create table con_configuracao (
   foreign key (con_responsavel) references usr_usuario (usr_id) on delete restrict on update cascade
 );
 
+create table fun_funcionalidade (
+  fun_id bigint generated always as identity,
+  fun_nome varchar not null,
+  fun_data_ativacao date not null,
+  fun_autorizacao bigint not null,
+  fun_url varchar(100),
+  fun_limite_acessos int,
+  unique(fun_nome),
+  foreign key (fun_autorizacao) references aut_autorizacao (aut_id) on delete restrict on update cascade
+);
+
+create table his_historico (
+  his_id bigint generated always as identity,
+  his_aut_nome_antigo varchar(20) not null,
+  his_aut_nome_novo varchar(20) not null,
+  his_data date not null,
+  his_autorizacao bigint not null,
+  his_alcance float,
+  foreign key (his_autorizacao) references aut_autorizacao (aut_id) on delete restrict on update cascade
+);
+
 insert into usr_usuario (usr_nome, usr_senha)
   values ('admin', '$2a$10$i3.Z8Yv1Fwl0I5SNjdCGkOTRGQjGvHjh/gMZhdc3e7LIovAklqM6C');
 insert into aut_autorizacao (aut_nome)
@@ -77,6 +98,12 @@ insert into ace_acesso (ace_tipo, ace_data_hora_inicio, ace_tempo_acesso, ace_us
 insert into con_configuracao (con_responsavel, con_data_hora, con_parametro, con_valor)
   values (1, '2025-09-03 11:30:00', 'taxa', 20.7),
          (1, current_timestamp, 'rotação', null);
+insert into fun_funcionalidade (fun_nome, fun_data_ativacao, fun_limite_acessos, fun_autorizacao)
+  values ('Clientes', '2025-09-03', null, 1),
+         ('Permissões', current_date, 3, 1);
+insert into his_historico (his_aut_nome_antigo, his_aut_nome_novo, his_data, his_autorizacao, his_alcance)
+  values ('ROLE_ROOT', 'ROLE_ADMIN', '2025-09-03', 1, 0.73),
+         ('ROLE_USER', 'ROLE_GERAL', current_date, 1, null);
 
 create user spring with password 'pass123';
 
